@@ -200,10 +200,6 @@ function App() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-black/10 px-6 py-4 text-center text-[10px] tracking-widest uppercase text-black/30">
-        Soundscape &mdash; TouchDesigner &rarr; WebSocket @ localhost:9980
-      </footer>
     </div>
   );
 }
