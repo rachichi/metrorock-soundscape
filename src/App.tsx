@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useState } from "react";
 import { useTouchDesigner } from "./hooks/useTouchDesigner";
 
 function formatTime(ts: number): string {
@@ -12,49 +12,9 @@ function formatTime(ts: number): string {
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-
-  const getAudioCtx = useCallback(() => {
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext();
-    }
-    if (audioCtxRef.current.state === "suspended") {
-      audioCtxRef.current.resume();
-    }
-    return audioCtxRef.current;
-  }, []);
-
-  const playTapSound = useCallback(() => {
-    const ctx = getAudioCtx();
-    const now = ctx.currentTime;
-
-    const bufferSize = ctx.sampleRate * 0.08;
-    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
-    }
-
-    const noise = ctx.createBufferSource();
-    noise.buffer = noiseBuffer;
-
-    const filter = ctx.createBiquadFilter();
-    filter.type = "bandpass";
-    filter.frequency.value = 800;
-    filter.Q.value = 1.2;
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.6, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-
-    noise.connect(filter).connect(gain).connect(ctx.destination);
-    noise.start(now);
-    noise.stop(now + 0.12);
-  }, [getAudioCtx]);
 
   const { isConnected, error, taps, clearTaps } = useTouchDesigner({
     url: "ws://localhost:9980",
-    onTap: playTapSound,
   });
 
   return (
