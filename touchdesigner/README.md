@@ -224,6 +224,60 @@ Constant CHOP (chord_trigger) ──→ Trigger CHOP (chord_env)
 | **Different progression** | Edit `CHORDS` in `tap_callback` — any `(root, third, fifth)` Hz |
 | **Match visuals to chord** | Index into `PALETTES` with `chord_index` instead of `random.choice` |
 
+### 6. Live visual embed — Web Server DAT (serves frames to React)
+
+The React dashboard embeds the live TD gradient as a fullscreen background.
+A **Web Server DAT** serves JPEG snapshots of `ramp1` at ~20fps.
+
+#### Textport setup
+
+```python
+ws = op('/project1').create(webserverDAT, 'webserver1')
+ws.par.port = 9981
+ws.par.active = True
+```
+
+```python
+wscb = op('/project1').create(textDAT, 'webserver1_callbacks')
+```
+
+```python
+wscb.text = """
+def onHTTPRequest(webServerDAT, request, response):
+    uri = request['uri']
+    if uri == '/frame' or uri == '/frame.jpg':
+        top = op('/project1/ramp1')
+        if top is not None:
+            try:
+                response['statusCode'] = 200
+                response['statusReason'] = 'OK'
+                response['data'] = top.saveByteArray('.jpg')
+                response['content-type'] = 'image/jpeg'
+            except:
+                response['statusCode'] = 500
+                response['statusReason'] = 'Error'
+                response['data'] = b'error'
+        else:
+            response['statusCode'] = 404
+            response['statusReason'] = 'Not Found'
+            response['data'] = b'ramp1 not found'
+    else:
+        response['statusCode'] = 200
+        response['statusReason'] = 'OK'
+        response['content-type'] = 'text/plain'
+        response['data'] = b'metrorock soundscape - use /frame.jpg'
+    return response
+"""
+```
+
+```python
+op('/project1/webserver1').par.callbacks = 'webserver1_callbacks'
+```
+
+Test by visiting `http://localhost:9981/frame.jpg` in a browser.
+
+---
+
 ## Testing without an Arduino
 
 You can test the WebSocket bridge without hardware. In a TouchDesigner
@@ -237,8 +291,9 @@ The React dashboard should show the tap event appear.
 
 ## Ports
 
-| Service          | Port  |
-|------------------|-------|
-| React dev server | 5173  |
-| WebSocket server | 9980  |
-| Arduino serial   | 9600 baud |
+| Service            | Port      |
+|--------------------|-----------|
+| React dev server   | 5173      |
+| WebSocket server   | 9980      |
+| Web Server (frames)| 9981      |
+| Arduino serial     | 9600 baud |

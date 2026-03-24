@@ -1,6 +1,6 @@
 const int PIEZO_PIN = A0;
 const int THRESHOLD = 150;
-const int COOLDOWN = 300;
+const int COOLDOWN = 500;
 
 unsigned long lastTrigger = 0;
 

@@ -108,6 +108,27 @@ function App() {
               {error}
             </div>
           )}
+
+          {/* Live TD visual */}
+          <div className="mt-6 w-full aspect-video rounded-lg overflow-hidden border border-black/10 bg-black">
+            <img
+              src="http://localhost:9981/frame.jpg"
+              alt="Live projector output"
+              className="w-full h-full object-cover"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                setTimeout(() => {
+                  img.src = `http://localhost:9981/frame.jpg?t=${Date.now()}`;
+                }, 50);
+              }}
+              onError={(e) => {
+                const img = e.currentTarget;
+                setTimeout(() => {
+                  img.src = `http://localhost:9981/frame.jpg?t=${Date.now()}`;
+                }, 1000);
+              }}
+            />
+          </div>
         </section>
 
         {/* Tap feed */}
