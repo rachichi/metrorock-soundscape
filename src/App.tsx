@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SiteFooter, SiteHeader } from "@rachichi/design";
 import { useTouchDesigner } from "./hooks/useTouchDesigner";
 
 function formatTime(ts: number): string {
@@ -11,73 +11,13 @@ function formatTime(ts: number): string {
 }
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const { isConnected, error, taps, clearTaps } = useTouchDesigner({
     url: "ws://localhost:9980",
   });
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col font-sans">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white text-black border-b border-black/10 z-50">
-        <div className="flex items-center justify-between px-6 py-3 md:px-10">
-          <div className="flex items-baseline gap-1.5 md:gap-2 whitespace-nowrap">
-            <a
-              href="/"
-              className="text-base font-bold tracking-wide sm:text-xl md:text-3xl"
-            >
-              RACHEL 静如 LIU
-            </a>
-            <span className="text-[10px] sm:text-xs md:text-sm font-normal tracking-widest text-black/50">
-              &lt;metrorock soundscape&gt;
-            </span>
-          </div>
-          <nav className="hidden items-center gap-8 md:flex">
-            <a
-              href="https://rachelliu.netlify.app/projects"
-              className="text-sm tracking-widest transition-opacity hover:opacity-70"
-            >
-              PROJECTS
-            </a>
-            <a
-              href="https://rachelliu.netlify.app/resume"
-              className="text-sm tracking-widest transition-opacity hover:opacity-70"
-            >
-              RESUMÉ
-            </a>
-          </nav>
-          <button
-            className="md:hidden"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            <div className="flex flex-col gap-1.5">
-              <span className={`block h-0.5 w-6 bg-black transition-transform ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
-              <span className={`block h-0.5 w-6 bg-black transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`block h-0.5 w-6 bg-black transition-transform ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
-            </div>
-          </button>
-        </div>
-        {menuOpen && (
-          <div className="flex flex-col items-center gap-4 border-t border-black/10 pb-6 pt-4 md:hidden">
-            <a
-              href="https://rachelliu.netlify.app/projects"
-              onClick={() => setMenuOpen(false)}
-              className="text-sm tracking-widest transition-opacity hover:opacity-70"
-            >
-              PROJECTS
-            </a>
-            <a
-              href="https://rachelliu.netlify.app/resume"
-              onClick={() => setMenuOpen(false)}
-              className="text-sm tracking-widest transition-opacity hover:opacity-70"
-            >
-              RESUMÉ
-            </a>
-          </div>
-        )}
-      </header>
+      <SiteHeader title="METROROCK SOUNDSCAPE" position="fixed" />
 
       {/* Main content */}
       <main className="flex-1 flex flex-col items-center px-6 pt-24 pb-12 md:px-10 max-w-xl mx-auto w-full">
@@ -181,6 +121,7 @@ function App() {
         </section>
       </main>
 
+      <SiteFooter stack="react, typescript, touchdesigner, arduino" />
     </div>
   );
 }
